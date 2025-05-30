@@ -41,7 +41,7 @@ Behind the scenes you’ll fetch data from [PokeAPI](https://pokeapi.co/) and de
    - All other choices (TypeScript vs. JavaScript, styling tools, testing frameworks, state management etc.) are yours to decide. See the **Bonus Points** section for technologies that will earn extra credit.  
 
 2. **Table View**  
-   - Fetch Pokémon data from PokeAPI and display a paginated list. You should load at least the first 150 Pokémon, but only display 5 - 10 at a time per page or batch.  
+   - Fetch Pokémon data from PokeAPI and display a paginated list. You can display for example 5 - 10 at a time per page or batch.  
    - Columns:  
      - Sprite image  
      - Name + Base XP  
@@ -55,7 +55,7 @@ Behind the scenes you’ll fetch data from [PokeAPI](https://pokeapi.co/) and de
   <img src="./wireframes/table_view.png" alt="Table View Wireframe" width="600" />
 </div>
 
-3. **Details View**  
+1. **Details View**  
    - On row click, show a detail panel or separate route.  
    - Display:  
      - Pokémon name, ID, Official artwork (from sprites.other['official-artwork'].front_default)
