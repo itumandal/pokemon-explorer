@@ -1,11 +1,21 @@
-import './App.css'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+// import './App.css';
+import PokemonCollection from './pages/pokemonCollection/PokemonCollection';
+import PokemonDetail from './pages/pokemonDetail/PokemonDetail';
 
+const queryClient = new QueryClient();
 function App() {
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">Pokemon Configuration in progress</h1>
-    </>
-  )
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<PokemonCollection />} />
+          <Route path="/pokemon/:id" element={<PokemonDetail />} />
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
 }
 
-export default App
+export default App;
