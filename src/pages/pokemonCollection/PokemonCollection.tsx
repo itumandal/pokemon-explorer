@@ -1,31 +1,23 @@
 import { useMemo, useState } from 'react';
-import { useQueries, useQuery } from '@tanstack/react-query';
-import { getPokemonDetail, getPokemonList } from '../../api/pokemonApi';
 import ErrorMessage from '../../components/ErrorMessage';
 import Loader from '../../components/Loader';
 import PokemonDashboardStats, {
   type PokemonLayout,
 } from '../../components/PokemonDashboardStatsCard';
-import type { IPokemonDetail } from '../../types/pokemon';
 import PokemonTable from '../../components/PokemonTable/PokemonTable';
+import { usePokemonList } from '../../customHooks/usePokemonQueries';
+import type { IPokemonDetail } from '../../types/pokemon';
+import { getTypeColor } from '../../utils/pokemonColors';
 
 const PokemonCollection = () => {
   const [page, setPage] = useState(1);
   const limit = 5;
   const offset = (page - 1) * limit;
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['pokemonList', page],
-    queryFn: () => getPokemonList(limit, offset),
-  });
-
-  const detailQueries = useQueries({
-    queries: (data?.results || []).map((p) => ({
-      queryKey: ['pokemonDetail', p.name],
-      queryFn: () => getPokemonDetail(p.name),
-      enabled: !!data,
-    })),
-  });
+  const {
+    pokemonListQuery: { data, isLoading, isError },
+    detailQueries,
+  } = usePokemonList(limit, offset, page);
 
   const allSuccess = detailQueries.every((q) => q.isSuccess);
   const isDetailsLoading = detailQueries.some((q) => q.isLoading);
@@ -66,7 +58,14 @@ const PokemonCollection = () => {
 
     const distributionPokemonType = Object.entries(typeCounts)
       .map(([type, count]) => ({
-        icon: <span>{type}</span>,
+        icon: (
+          <span
+            className="px-2 py-1 text-white rounded "
+            style={{ backgroundColor: getTypeColor(type) }}
+          >
+            {type}
+          </span>
+        ),
         percentage: Math.round((count / pokemonDetails.length) * 100),
       }))
       .sort((a, b) => b.percentage - a.percentage);
@@ -102,22 +101,26 @@ const PokemonCollection = () => {
   const tableData = pokemonDetails.map((pokemon) => {
     return {
       id: pokemon?.id,
-      image:
-        pokemon?.sprites?.other?.['official-artwork']?.front_default ||
-        pokemon?.sprites?.front_default,
+      image: pokemon?.sprites?.front_default,
       name: pokemon?.name,
       baseXp: pokemon?.base_experience,
       types: pokemon?.types?.map((poketype) => ({
         label: poketype?.type?.name,
-        icon: <span className=" bg-gray-200 rounded">🌿</span>,
+        icon: (
+          <span
+            key={poketype?.type?.name}
+            className="px-2 py-1 text-white rounded-full"
+            style={{ backgroundColor: getTypeColor(poketype.type.name) }}
+          >
+            🌿
+          </span>
+        ),
       })),
       hp: pokemon?.stats?.find((poke) => poke.stat.name === 'hp')?.base_stat ?? 0,
       speed: pokemon?.stats?.find((poke) => poke.stat.name === 'speed')?.base_stat ?? 0,
       ability: pokemon?.abilities[0].ability?.name ?? 'Unknown',
     };
   });
-
-  console.log(pokemonDetails);
 
   if (isLoading || isDetailsLoading) return <Loader />;
   if (isError) return <ErrorMessage />;
@@ -136,7 +139,7 @@ const PokemonCollection = () => {
         <button
           className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
           disabled={page === 1}
-          onClick={() => setPage(page - 1)}
+          onClick={() => setPage((prevPage) => prevPage - 1)}
         >
           Prev
         </button>
@@ -147,7 +150,7 @@ const PokemonCollection = () => {
           className="px-3 py-1 border rounded disabled:opacity-50 cursor-pointer"
           disabled={page === Math.ceil((data?.count ?? 0) / limit)}
           onClick={() => {
-            setPage(page + 1);
+            setPage((prevPage) => prevPage + 1);
           }}
         >
           Next

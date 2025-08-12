@@ -1,8 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-// import './App.css';
 import PokemonCollection from './pages/pokemonCollection/PokemonCollection';
-import PokemonDetail from './pages/pokemonDetail/PokemonDetail';
+import PokemonDetail from './pages/pokemonDetail/PokemonDetail copy';
 
 const queryClient = new QueryClient();
 function App() {
@@ -11,7 +10,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<PokemonCollection />} />
-          <Route path="/pokemon/:id" element={<PokemonDetail />} />
+          <Route path="/pokemon/:id/:name" element={<PokemonDetail />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

@@ -23,9 +23,9 @@ interface PokemonTableProps {
 
 const PokemonTable: React.FC<PokemonTableProps> = ({ data }) => {
   const navigate = useNavigate();
-  const handleNavigation = (id: number | undefined) => {
-    if (id) {
-      navigate(`/pokemon/${id}`);
+  const handleNavigation = (id: number | undefined, name: string | undefined) => {
+    if (id && name) {
+      navigate(`/pokemon/${id}/${name}`);
     }
   };
   return (
@@ -45,7 +45,7 @@ const PokemonTable: React.FC<PokemonTableProps> = ({ data }) => {
             <tr
               key={pokemon?.id}
               className={`${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'} cursor-pointer`}
-              onClick={() => handleNavigation(pokemon?.id)}
+              onClick={() => handleNavigation(pokemon?.id, pokemon?.name)}
             >
               <td className="px-4 py-2 whitespace-nowrap">
                 <div className="flex gap-1 min-w-0">
