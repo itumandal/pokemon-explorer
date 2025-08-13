@@ -1,4 +1,4 @@
-import { useQueries, useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery, type UseQueryResult } from '@tanstack/react-query';
 import type { IPokemonDetail } from '../types/pokemon';
 import {
   getEvolutionChain,
@@ -6,19 +6,20 @@ import {
   getPokemonList,
   getPokemonSpecies,
 } from '../api/pokemonApi';
+import type { IMoveItem } from '../components/MovesList';
 
 export interface IPokemonSpecies {
   id: number;
   evolution_chain?: { url: string } | null;
 }
 
-export interface EvolutionNode {
+export interface IEvolutionNode {
   species: { name: string; url: string };
-  evolves_to: EvolutionNode[];
+  evolves_to: IEvolutionNode[];
 }
 
 export interface IEvolutionChainResponse {
-  chain: EvolutionNode;
+  chain: IEvolutionNode;
 }
 
 export const usePokemonList = (limit: number, offset: number, page: number) => {
@@ -65,4 +66,30 @@ export const usePokemonDetailQuery = (
   });
 
   return { speciesQuery, evolutionQuery };
+};
+
+export const usePokemonMoveQuery = (moves: IMoveItem[]) => {
+  const queries = useQueries({
+    queries: moves.map((m) => ({
+      queryKey: ['move', m.move.name],
+      queryFn: async (): Promise<IMoveItem> => {
+        const res = await fetch(m.move.url);
+        if (!res.ok) throw new Error('Failed to fetch move data');
+        const data = await res.json();
+        return {
+          move: { name: m.move.name, url: m.move.url },
+          type: { name: data.type.name },
+        };
+      },
+      staleTime: 1000 * 60 * 5,
+    })),
+  }) as UseQueryResult<IMoveItem>[];
+
+  // Flatten to only successful data
+  const fetchedMoves = queries.filter((q) => q.isSuccess && q.data).map((q) => q.data!);
+
+  return {
+    moveQueries: queries,
+    fetchedMoves,
+  };
 };

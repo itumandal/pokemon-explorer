@@ -7,7 +7,7 @@ import PokemonDashboardStats, {
 import PokemonTable from '../../components/PokemonTable/PokemonTable';
 import { usePokemonList } from '../../customHooks/usePokemonQueries';
 import type { IPokemonDetail } from '../../types/pokemon';
-import { getTypeColor } from '../../utils/pokemonColors';
+import { getTypeStyle } from '../../utils/pokemonColors';
 
 const PokemonCollection = () => {
   const [page, setPage] = useState(1);
@@ -60,10 +60,11 @@ const PokemonCollection = () => {
       .map(([type, count]) => ({
         icon: (
           <span
-            className="px-2 py-1 text-white rounded "
-            style={{ backgroundColor: getTypeColor(type) }}
+            key={type}
+            className="px-2 py-1 text-white rounded-full"
+            style={{ backgroundColor: getTypeStyle(type).color }}
           >
-            {type}
+            {`${getTypeStyle(type).icon}${type}`}
           </span>
         ),
         percentage: Math.round((count / pokemonDetails.length) * 100),
@@ -110,9 +111,9 @@ const PokemonCollection = () => {
           <span
             key={poketype?.type?.name}
             className="px-2 py-1 text-white rounded-full"
-            style={{ backgroundColor: getTypeColor(poketype.type.name) }}
+            style={{ backgroundColor: getTypeStyle(poketype.type.name).color }}
           >
-            🌿
+            {getTypeStyle(poketype.type.name).icon}
           </span>
         ),
       })),

@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import PokemonCollection from './pages/pokemonCollection/PokemonCollection';
-import PokemonDetail from './pages/pokemonDetail/PokemonDetail copy';
+import PokemonDetail from './pages/pokemonDetail/PokemonDetail';
 
 const queryClient = new QueryClient();
 function App() {

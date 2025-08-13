@@ -1,3 +1,5 @@
+import type { IMoveItem } from '../components/MovesList';
+
 export interface IPokemonListResult {
   name: string;
   url: string;
@@ -55,4 +57,5 @@ export interface IPokemonDetail {
   abilities: IPokemonAbility[];
   stats: IPokemonStat[];
   sprites: IPokemonSprites;
+  moves?: IMoveItem[];
 }

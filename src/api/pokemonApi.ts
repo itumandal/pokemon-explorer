@@ -1,3 +1,4 @@
+import type { IMoveItem } from '../components/MovesList';
 import type { IPokemonDetail, IPokemonListResponse } from '../types/pokemon';
 
 const BASE_URL = 'https://pokeapi.co/api/v2';
@@ -39,4 +40,10 @@ export const getEvolutionChain = async (url: string) => {
   }
   const data = await response.json();
   return data;
+};
+
+export const getMoveDetails = async (url: string): Promise<IMoveItem> => {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error('Failed to fetch move details');
+  return response.json() as Promise<IMoveItem>;
 };

@@ -6,7 +6,7 @@ interface PokemonType {
   label: string;
 }
 
-interface Pokemon {
+interface IPokemon {
   id: number;
   image: string;
   name: string;
@@ -17,11 +17,11 @@ interface Pokemon {
   ability: string;
 }
 
-interface PokemonTableProps {
-  data: Pokemon[];
+interface IPokemonTableProps {
+  data: IPokemon[];
 }
 
-const PokemonTable: React.FC<PokemonTableProps> = ({ data }) => {
+const PokemonTable: React.FC<IPokemonTableProps> = ({ data }) => {
   const navigate = useNavigate();
   const handleNavigation = (id: number | undefined, name: string | undefined) => {
     if (id && name) {
