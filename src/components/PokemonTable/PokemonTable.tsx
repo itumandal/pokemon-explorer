@@ -17,7 +17,7 @@ interface IPokemon {
   ability: string;
 }
 
-interface IPokemonTableProps {
+export interface IPokemonTableProps {
   data: IPokemon[];
 }
 

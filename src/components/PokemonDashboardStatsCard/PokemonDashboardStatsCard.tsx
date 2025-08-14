@@ -7,7 +7,7 @@ interface IDistributionItem {
 
 export type PokemonLayout = 'default' | 'distribution';
 
-interface IPokemonDashboardStatsProps {
+export interface IPokemonDashboardStatsProps {
   topText?: string;
   value?: string | number;
   bottomText?: string;

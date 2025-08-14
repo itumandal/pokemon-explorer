@@ -1,4 +1,5 @@
-import type { IMoveItem } from '../components/MovesList';
+import { IMoveItem } from '../components/MovesList/MovesList';
+import type { IPokemonSpecies } from '../customHooks/usePokemonQueries';
 import type { IPokemonDetail, IPokemonListResponse } from '../types/pokemon';
 
 const BASE_URL = 'https://pokeapi.co/api/v2';
@@ -24,7 +25,7 @@ export const getPokemonDetail = async (nameOrId: string): Promise<IPokemonDetail
   return data;
 };
 
-export const getPokemonSpecies = async (id: number) => {
+export const getPokemonSpecies = async (id: number): Promise<IPokemonSpecies> => {
   const response = await fetch(`${BASE_URL}/pokemon-species/${id}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch Pokemon species: ${response.statusText}`);
@@ -45,5 +46,6 @@ export const getEvolutionChain = async (url: string) => {
 export const getMoveDetails = async (url: string): Promise<IMoveItem> => {
   const response = await fetch(url);
   if (!response.ok) throw new Error('Failed to fetch move details');
-  return response.json() as Promise<IMoveItem>;
+  const data = await response.json();
+  return data;
 };

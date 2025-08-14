@@ -6,7 +6,7 @@ import {
   getPokemonList,
   getPokemonSpecies,
 } from '../api/pokemonApi';
-import type { IMoveItem } from '../components/MovesList';
+import { IMoveItem } from '../components/MovesList/MovesList';
 
 export interface IPokemonSpecies {
   id: number;
@@ -31,8 +31,8 @@ export const usePokemonList = (limit: number, offset: number, page: number) => {
   const detailQueries = useQueries({
     queries: (pokemonListQuery?.data?.results || []).map((p) => ({
       queryKey: ['pokemonDetail', p.name],
-      queryFn: () => getPokemonDetail(p.name),
       enabled: !!pokemonListQuery?.data,
+      queryFn: () => getPokemonDetail(p.name),
       staleTime: 1000 * 60 * 5,
     })),
   });
@@ -85,8 +85,12 @@ export const usePokemonMoveQuery = (moves: IMoveItem[]) => {
     })),
   }) as UseQueryResult<IMoveItem>[];
 
-  // Flatten to only successful data
-  const fetchedMoves = queries.filter((q) => q.isSuccess && q.data).map((q) => q.data!);
+  const fetchedMoves = queries
+    .filter(
+      (query): query is UseQueryResult<IMoveItem> & { data: IMoveItem } =>
+        query.isSuccess && query.data !== undefined
+    )
+    .map((query) => query.data);
 
   return {
     moveQueries: queries,

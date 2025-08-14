@@ -19,8 +19,10 @@
     "skipLibCheck": true,
     "target": "ES2020",
     "lib": ["DOM", "ESNext"],
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["node", "jest"]
   },
-  "files": [],
-  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
+  "include": ["src", "**/*.ts", "**/*.tsx", "**/*.test.ts", "**/*.test.tsx"]
+  // "files": []
+  // "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }

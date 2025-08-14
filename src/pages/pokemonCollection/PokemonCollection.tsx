@@ -3,7 +3,7 @@ import ErrorMessage from '../../components/ErrorMessage';
 import Loader from '../../components/Loader';
 import PokemonDashboardStats, {
   type PokemonLayout,
-} from '../../components/PokemonDashboardStatsCard';
+} from '../../components/PokemonDashboardStatsCard/PokemonDashboardStatsCard';
 import PokemonTable from '../../components/PokemonTable/PokemonTable';
 import { usePokemonList } from '../../customHooks/usePokemonQueries';
 import type { IPokemonDetail } from '../../types/pokemon';
@@ -77,7 +77,7 @@ const PokemonCollection = () => {
   const cardDetails = [
     {
       topText: 'Total Pokemon',
-      value: data?.count,
+      value: data?.count ?? 0,
       bottomText: 'in collection',
     },
     {
@@ -119,7 +119,7 @@ const PokemonCollection = () => {
       })),
       hp: pokemon?.stats?.find((poke) => poke.stat.name === 'hp')?.base_stat ?? 0,
       speed: pokemon?.stats?.find((poke) => poke.stat.name === 'speed')?.base_stat ?? 0,
-      ability: pokemon?.abilities[0].ability?.name ?? 'Unknown',
+      ability: pokemon?.abilities[0]?.ability?.name ?? 'Unknown',
     };
   });
 

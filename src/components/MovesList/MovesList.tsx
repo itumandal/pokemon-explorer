@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { usePokemonMoveQuery } from '../customHooks/usePokemonQueries';
-import ErrorMessage from './ErrorMessage';
-import Loader from './Loader';
+import { usePokemonMoveQuery } from '../../customHooks/usePokemonQueries';
+import { getTypeStyle } from '../../utils/pokemonColors';
+import ErrorMessage from '../ErrorMessage';
+import Loader from '../Loader';
 
 export interface IMoveItem {
   move: { name: string; url: string };
@@ -17,11 +18,7 @@ const CHUNK_SIZE = 20;
 const MovesList: React.FC<IMovesListProps> = ({ moves }) => {
   const [visibleCount, setVisibleCount] = useState(CHUNK_SIZE);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
-
-  // The chunk currently visible
   const currentVisible = moves?.slice(0, visibleCount) ?? [];
-
-  // React Query will cache all fetched moves
   const { moveQueries, fetchedMoves } = usePokemonMoveQuery(currentVisible);
 
   const isInitialLoading = moveQueries.some((q) => q.isLoading) && fetchedMoves.length === 0;
@@ -31,7 +28,7 @@ const MovesList: React.FC<IMovesListProps> = ({ moves }) => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
+        if (entries[0]?.isIntersecting) {
           setVisibleCount((prev) => (prev >= (moves ?? []).length ? prev : prev + CHUNK_SIZE));
         }
       },
@@ -58,7 +55,7 @@ const MovesList: React.FC<IMovesListProps> = ({ moves }) => {
           >
             <span className="capitalize">{m.move.name.replace('-', ' ')}</span>
             <span className="text-xs bg-white border px-2 py-1 rounded-full text-gray-600">
-              {m.type.name}
+              {`${getTypeStyle(m.type.name).icon}${m.type.name}`}
             </span>
           </li>
         ))}

@@ -3,10 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { usePokemonDetailQuery } from '../../customHooks/usePokemonQueries';
 import { usePokemonStats } from '../../customHooks/usePokemonStats';
 import { getTypeStyle } from '../../utils/pokemonColors';
-import HorizontalBaseStats from '../../components/HorizontalBaseStats';
-import MovesList from '../../components/MovesList';
+import HorizontalBaseStats from '../../components/HorizontalBaseStats/HorizontalBaseStats';
 import { getPokemonDetail } from '../../api/pokemonApi';
 import { createStatsMap, getStatValue, STAT_CONFIG } from '../../utils/config';
+import MovesList from '../../components/MovesList/MovesList';
+import EvolutionChain from '../../components/EvolutionChain/EvolutionChain';
 
 const PokemonDetail = () => {
   const { id, name } = useParams();
@@ -21,7 +22,6 @@ const PokemonDetail = () => {
   const statsMap = createStatsMap(pokemon);
   const isLoading = speciesQuery.isLoading || evolutionQuery.isLoading;
   const isError = speciesQuery.isError;
-
   const { typeList } = usePokemonStats(detailPokemonQuery);
 
   if (isLoading) {
@@ -115,13 +115,13 @@ const PokemonDetail = () => {
         </div>
       </div>
       {/* Evolution chain */}
-      {/* {evolutionQuery.data?.chain && (
-        <div className="mb-6 bg-white p-4 rounded-lg shadow">
+      {evolutionQuery.data?.chain && (
+        <div className="mb-6 bg-white p-4 shadow">
           <EvolutionChain chain={evolutionQuery.data.chain} />
         </div>
-      )} */}
+      )}
       {/* Moves */}
-      <div className="bg-white p-4 rounded-lg shadow">
+      <div className="bg-white p-4 shadow">
         <h3 className="text-lg font-semibold mb-4">Moves</h3>
         <MovesList moves={pokemon?.moves} />
       </div>

@@ -1,4 +1,4 @@
-import type { IMoveItem } from '../components/MovesList';
+import { IMoveItem } from '../components/MovesList/MovesList';
 
 export interface IPokemonListResult {
   name: string;
