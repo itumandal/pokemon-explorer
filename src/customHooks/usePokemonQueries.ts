@@ -19,7 +19,7 @@ export interface IEvolutionNode {
 }
 
 export interface IEvolutionChainResponse {
-  chain: IEvolutionNode;
+  chain: IEvolutionNode | null;
 }
 
 export const usePokemonList = (limit: number, offset: number, page: number) => {
@@ -85,12 +85,7 @@ export const usePokemonMoveQuery = (moves: IMoveItem[]) => {
     })),
   }) as UseQueryResult<IMoveItem>[];
 
-  const fetchedMoves = queries
-    .filter(
-      (query): query is UseQueryResult<IMoveItem> & { data: IMoveItem } =>
-        query.isSuccess && query.data !== undefined
-    )
-    .map((query) => query.data);
+  const fetchedMoves = queries.filter((q) => q.isSuccess && q.data).map((q) => q.data!);
 
   return {
     moveQueries: queries,

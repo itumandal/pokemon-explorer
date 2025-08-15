@@ -2,12 +2,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { usePokemonDetailQuery } from '../../customHooks/usePokemonQueries';
 import { usePokemonStats } from '../../customHooks/usePokemonStats';
-import { getTypeStyle } from '../../utils/pokemonColors';
+import EvolutionChain from '../../components/EvolutionChain/EvolutionChain';
 import HorizontalBaseStats from '../../components/HorizontalBaseStats/HorizontalBaseStats';
+import Loader from '../../components/Loader';
+import MovesList from '../../components/MovesList/MovesList';
 import { getPokemonDetail } from '../../api/pokemonApi';
 import { createStatsMap, getStatValue, STAT_CONFIG } from '../../utils/config';
-import MovesList from '../../components/MovesList/MovesList';
-import EvolutionChain from '../../components/EvolutionChain/EvolutionChain';
+import { getTypeStyle } from '../../utils/pokemonColors';
 
 const PokemonDetail = () => {
   const { id, name } = useParams();
@@ -25,7 +26,11 @@ const PokemonDetail = () => {
   const { typeList } = usePokemonStats(detailPokemonQuery);
 
   if (isLoading) {
-    return <div className="p-6">Loading...</div>;
+    return (
+      <div className="p-6">
+        <Loader />
+      </div>
+    );
   }
   if (isError || !pokemon) {
     return <div className="p-6 text-red-600">Unable to load Pokémon details.</div>;
@@ -114,13 +119,11 @@ const PokemonDetail = () => {
           </div>
         </div>
       </div>
-      {/* Evolution chain */}
       {evolutionQuery.data?.chain && (
         <div className="mb-6 bg-white p-4 shadow">
           <EvolutionChain chain={evolutionQuery.data.chain} />
         </div>
       )}
-      {/* Moves */}
       <div className="bg-white p-4 shadow">
         <h3 className="text-lg font-semibold mb-4">Moves</h3>
         <MovesList moves={pokemon?.moves} />

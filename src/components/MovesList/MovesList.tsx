@@ -26,6 +26,7 @@ const MovesList: React.FC<IMovesListProps> = ({ moves }) => {
 
   // Infinite scroll: load more moves when user reaches bottom
   useEffect(() => {
+    if (!loadMoreRef.current) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting) {
@@ -35,12 +36,22 @@ const MovesList: React.FC<IMovesListProps> = ({ moves }) => {
       { rootMargin: '100px' }
     );
 
-    if (loadMoreRef.current) observer.observe(loadMoreRef.current);
+    observer.observe(loadMoreRef.current);
+
+    // Immediate check after render to handle "already visible" case
+    requestAnimationFrame(() => {
+      if (
+        loadMoreRef.current &&
+        loadMoreRef.current.getBoundingClientRect().top < window.innerHeight
+      ) {
+        setVisibleCount((prev) => (prev >= (moves ?? []).length ? prev : prev + CHUNK_SIZE));
+      }
+    });
 
     return () => {
       if (loadMoreRef.current) observer.unobserve(loadMoreRef.current);
     };
-  }, [moves?.length]);
+  }, [moves?.length, fetchedMoves.length]);
 
   if (isInitialLoading) return <Loader />;
   if (isError) return <ErrorMessage />;

@@ -15,6 +15,7 @@ const HorizontalBaseStats: React.FC<IHorizontalBaseStatsProps> = ({
       <div className="w-28 text-sm font-medium">{label}</div>
       <div className="flex-1 bg-gray-200 rounded-full h-4 overflow-hidden">
         <div
+          data-testid="inner-bar"
           className="h-4 rounded-full"
           style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#ff7a7a,#ffb6c1)' }}
         />

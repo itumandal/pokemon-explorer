@@ -1,10 +1,6 @@
 import React from 'react';
 import { IEvolutionChainResponse, IEvolutionNode } from '../../customHooks/usePokemonQueries';
 
-const spriteForName = (name: string) =>
-  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${name}.png`;
-// note: official-artwork filenames by name aren't available — if you want exact sprites you should map species to id.
-
 const renderNode = (node: IEvolutionNode): React.ReactNode => {
   return (
     <div className="flex items-center gap-4">
