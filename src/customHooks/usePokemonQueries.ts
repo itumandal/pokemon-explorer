@@ -22,6 +22,19 @@ export interface IEvolutionChainResponse {
   chain: IEvolutionNode | null;
 }
 
+/**
+ * Fetches a paginated list of Pokémon along with their detailed data.
+ *
+ * @param {number} limit - Number of Pokémon to fetch per page.
+ * @param {number} offset - The offset for pagination (starting index).
+ * @param {number} page - Current page number (used in query key).
+ * @returns {{
+ *   pokemonListQuery: UseQueryResult<IPokemonListResponse>,
+ *   detailQueries: UseQueryResult<IPokemonDetail>[]
+ * }} An object containing:
+ *  - `pokemonListQuery`: The main Pokémon list query result.
+ *  - `detailQueries`: Array of detailed Pokémon queries for each item in the list.
+ */
 export const usePokemonList = (limit: number, offset: number, page: number) => {
   const pokemonListQuery = useQuery({
     queryKey: ['pokemonList', page],
@@ -39,6 +52,18 @@ export const usePokemonList = (limit: number, offset: number, page: number) => {
   return { pokemonListQuery, detailQueries };
 };
 
+/**
+ * Fetches additional details for a Pokémon, including species and evolution chain.
+ *
+ * @param {string | undefined} nameOrId - Pokémon name or ID.
+ * @param {IPokemonDetail | undefined} detailQuery - Pokémon detail data used to extract ID.
+ * @returns {{
+ *   speciesQuery: UseQueryResult<IPokemonSpecies | null>,
+ *   evolutionQuery: UseQueryResult<IEvolutionChainResponse | null>
+ * }} An object containing:
+ *  - `speciesQuery`: Query result for Pokémon species data.
+ *  - `evolutionQuery`: Query result for Pokémon evolution chain.
+ */
 export const usePokemonDetailQuery = (
   nameOrId: string | undefined,
   detailQuery: IPokemonDetail | undefined
@@ -68,6 +93,17 @@ export const usePokemonDetailQuery = (
   return { speciesQuery, evolutionQuery };
 };
 
+/**
+ * Fetches detailed move data for a given list of Pokémon moves.
+ *
+ * @param {IMoveItem[]} moves - Array of move objects containing move name and URL.
+ * @returns {{
+ *   moveQueries: UseQueryResult<IMoveItem>[],
+ *   fetchedMoves: IMoveItem[]
+ * }} An object containing:
+ *  - `moveQueries`: Array of move queries (one per move).
+ *  - `fetchedMoves`: Array of successfully fetched move data.
+ */
 export const usePokemonMoveQuery = (moves: IMoveItem[]) => {
   const queries = useQueries({
     queries: moves.map((m) => ({

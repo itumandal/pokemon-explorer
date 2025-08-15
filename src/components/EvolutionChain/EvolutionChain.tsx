@@ -1,6 +1,12 @@
 import React from 'react';
 import { IEvolutionChainResponse, IEvolutionNode } from '../../customHooks/usePokemonQueries';
 
+/**
+ * Recursively renders a single node of the evolution chain along with its children.
+ *
+ * @param {IEvolutionNode} node - The evolution node containing species info and possible next evolutions.
+ * @returns {React.ReactNode} JSX structure representing the current evolution stage and its subsequent evolutions.
+ */
 const renderNode = (node: IEvolutionNode): React.ReactNode => {
   return (
     <div className="flex items-center gap-4">
@@ -12,6 +18,7 @@ const renderNode = (node: IEvolutionNode): React.ReactNode => {
         />
         <div className="mt-2 capitalize text-sm">{node.species.name}</div>
       </div>
+      {/* Render children evolution stages if available */}
       {node.evolves_to.length > 0 && (
         <div className="flex items-center gap-4">
           {node.evolves_to.map((child) => (
@@ -26,12 +33,28 @@ const renderNode = (node: IEvolutionNode): React.ReactNode => {
   );
 };
 
-// helper to get id from the species url like .../pokemon-species/{id}/
+/**
+ * Extracts the Pokémon species ID from its API URL.
+ *
+ * @param {string} url - Full Pokémon species URL from the API.
+ * @returns {string} - Extracted species ID as a string.
+ *
+ * @example
+ * // returns "25"
+ * extractIdFromSpeciesUrl("https://pokeapi.co/api/v2/pokemon-species/25/")
+ */
 const extractIdFromSpeciesUrl = (url: string): string => {
   const parts = url.split('/').filter(Boolean);
   return parts[parts.length - 1] ?? '';
 };
 
+/**
+ * Renders the entire evolution chain for a Pokémon.
+ *
+ * @component
+ * @param {IEvolutionChainResponse} props - The evolution chain response containing the root `chain` node.
+ * @returns {JSX.Element | null} - JSX structure of the evolution chain, or null if no chain data exists.
+ */
 const EvolutionChain: React.FC<IEvolutionChainResponse> = ({ chain }) => {
   if (!chain) return null;
   return (

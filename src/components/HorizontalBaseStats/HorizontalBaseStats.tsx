@@ -3,7 +3,32 @@ interface IHorizontalBaseStatsProps {
   value: number;
   maxValue?: number;
 }
-
+/**
+ * HorizontalBaseStats Component
+ *
+ * This component visually represents a single Pokémon stat as a horizontal progress bar.
+ * It displays:
+ * - A label for the stat (e.g., "HP", "Attack")
+ * - A progress bar filled proportionally to the stat value
+ * - The numeric value itself
+ *
+ * Design Decisions:
+ * - Used `maxValue` with a default of 100 to normalize different stats for consistent bar lengths.
+ * - Used `Math.min` to cap the fill percentage at 100% to avoid overflow.
+ * - Tailwind CSS classes for responsive styling.
+ * - Gradient color for better Pokémon-themed aesthetics.
+ * - `data-testid` for easy test targeting in unit tests.
+ *
+ * Pros:
+ * - Reusable for any type of horizontal stat visualization.
+ * - Self-contained; requires only props, no external state.
+ * - Easy to style and extend with animations or theming.
+ *
+ * @param {string} label - The name of the stat (e.g., "Speed").
+ * @param {number} value - The actual stat value.
+ * @param {number} [maxValue=100] - The maximum possible value to normalize the bar length.
+ * @returns {JSX.Element} A styled horizontal bar chart element for a stat.
+ */
 const HorizontalBaseStats: React.FC<IHorizontalBaseStatsProps> = ({
   label,
   value,

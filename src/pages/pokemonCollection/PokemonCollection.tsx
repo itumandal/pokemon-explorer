@@ -9,6 +9,39 @@ import { usePokemonList } from '../../customHooks/usePokemonQueries';
 import type { IPokemonDetail } from '../../types/pokemon';
 import { getTypeStyle } from '../../utils/pokemonColors';
 
+/**
+ * PokemonCollection Component
+ *
+ * Purpose:
+ * - Acts as the main dashboard to display a paginated collection of Pokémon
+ *   with statistical insights and a detailed table view.
+ *
+ * Design Decisions:
+ * 1. **Pagination**
+ *    - Controlled with `page` state and derived `offset` to fetch limited Pokémon per request.
+ *    - Keeps API calls lightweight and UI responsive.
+ *
+ * 2. **React Query for Data Fetching**
+ *    - `usePokemonList` hook returns both a paginated Pokémon list and detailed queries for each Pokémon.
+ *    - This parallel fetching approach reduces the time to render the complete dataset.
+ *
+ * 3. **Derived Metrics via `useMemo`**
+ *    - `averageHP`, `mostPowerfulPokemon`, `typeDistribution` are memoized
+ *      to prevent unnecessary recalculations on each render.
+ *    - Keeps performance optimal for large datasets.
+ *
+ * 4. **Dynamic UI Rendering**
+ *    - Loader and error components are used for better UX during API states.
+ *    - Dashboard cards (`PokemonDashboardStats`) provide key insights at a glance.
+ *    - Pokémon table (`PokemonTable`) offers a detailed breakdown.
+ *
+ * Pros:
+ * - Efficient API usage with paginated requests.
+ * - Smooth UI with minimal re-renders.
+ * - Clear separation of concerns: statistics, table, and pagination controls.
+ * - Extensible design — adding more stats or table columns is straightforward.
+ */
+
 const PokemonCollection = () => {
   const [page, setPage] = useState(1);
   const limit = 5;
@@ -26,6 +59,10 @@ const PokemonCollection = () => {
     ? detailQueries.map((q) => q.data as IPokemonDetail)
     : [];
 
+  /**
+   * Calculates the average HP for Pokémon in the current page.
+   * Memoized for performance.
+   */
   const averageHP = useMemo(() => {
     if (pokemonDetails.length === 0) return 0;
     const totalHpInCurrentPage = pokemonDetails.reduce((acc, curr) => {
@@ -36,6 +73,10 @@ const PokemonCollection = () => {
     return totalHpInCurrentPage / pokemonDetails.length;
   }, [pokemonDetails]);
 
+  /**
+   * Finds the Pokémon with the highest total stats in the current page.
+   * Sorted in descending order of score.
+   */
   const mostPowerfulPokemon = useMemo(() => {
     if (pokemonDetails.length === 0) return null;
     return pokemonDetails
@@ -46,6 +87,10 @@ const PokemonCollection = () => {
       .sort((a, b) => b.score - a.score)[0];
   }, [pokemonDetails]);
 
+  /**
+   * Calculates the percentage distribution of Pokémon types in the current page.
+   * Converts counts into styled percentage-based items for display.
+   */
   const typeDistribution = useMemo(() => {
     if (pokemonDetails.length === 0) return [];
     const typeCounts: Record<string, number> = {};
@@ -70,10 +115,13 @@ const PokemonCollection = () => {
         percentage: Math.round((count / pokemonDetails.length) * 100),
       }))
       .sort((a, b) => b.percentage - a.percentage);
-    // .slice(0, 3);
     return distributionPokemonType;
   }, [pokemonDetails]);
 
+  /**
+   * Prepares dashboard card content.
+   * Combines static metrics (total count) with calculated metrics.
+   */
   const cardDetails = [
     {
       topText: 'Total Pokemon',
@@ -99,6 +147,10 @@ const PokemonCollection = () => {
     },
   ];
 
+  /**
+   * Prepares table rows for the Pokémon list.
+   * Each row contains visual type icons, stats, and basic info.
+   */
   const tableData = pokemonDetails.map((pokemon) => {
     return {
       id: pokemon?.id,
@@ -128,12 +180,12 @@ const PokemonCollection = () => {
   return (
     <div className="min-h-screen p-4 bg-gray-100">
       <h1 className="text-2xl font-bold mb-4">Pokémon Collection</h1>
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {cardDetails.map((card, idx) => (
           <PokemonDashboardStats key={idx} {...card} />
         ))}
       </div>
-      <div className="mt-4">
+      <div className="mt-4 overflow-x-auto">
         <PokemonTable data={tableData} />
       </div>
       <div className="flex justify-center gap-2 mt-4">

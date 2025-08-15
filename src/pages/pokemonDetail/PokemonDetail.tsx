@@ -10,6 +10,18 @@ import { getPokemonDetail } from '../../api/pokemonApi';
 import { createStatsMap, getStatValue, STAT_CONFIG } from '../../utils/config';
 import { getTypeStyle } from '../../utils/pokemonColors';
 
+/**
+ * Component that displays detailed information for a single Pokémon.
+ *
+ * This component:
+ * - Fetches Pokémon details from the API.
+ * - Displays general information such as types, abilities, height, weight, and base experience.
+ * - Shows base stats in a horizontal bar format.
+ * - Displays the evolution chain if available.
+ * - Lists all moves for the Pokémon.
+ *
+ * @returns  A detailed Pokémon view with stats, abilities, evolutions, and moves.
+ */
 const PokemonDetail = () => {
   const { id, name } = useParams();
   const navigate = useNavigate();
@@ -44,6 +56,7 @@ const PokemonDetail = () => {
       >
         ← Back
       </button>
+      {/* Pokémon header with name and image */}
       <div className="bg-gradient-to-r from-red-400 via-purple-500 to-blue-600 rounded-t-lg text-white pl-6 pr-6 h-50 flex justify-between items-center">
         <div>
           <h1 className="text-4xl font-bold capitalize">{pokemon.name}</h1>
@@ -58,7 +71,9 @@ const PokemonDetail = () => {
           className="w-30 h-30 rounded-full p-2 bg-white/20"
         />
       </div>
+      {/* Pokémon details grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {/* Left column: Types, abilities, and physical traits */}
         <div className="col-span-1 bg-white p-4">
           <div className="mb-4">
             <h3 className="text-lg font-semibold">Type</h3>
@@ -104,7 +119,7 @@ const PokemonDetail = () => {
             </div>
           </div>
         </div>
-
+        {/* Right column: Base stats */}
         <div className="col-span-1 bg-white p-4">
           <h3 className="text-lg font-semibold mb-4">Base Stats</h3>
 
@@ -119,11 +134,13 @@ const PokemonDetail = () => {
           </div>
         </div>
       </div>
+      {/* Evolution chain */}
       {evolutionQuery.data?.chain && (
         <div className="mb-6 bg-white p-4 shadow">
           <EvolutionChain chain={evolutionQuery.data.chain} />
         </div>
       )}
+      {/* Moves list */}
       <div className="bg-white p-4 shadow">
         <h3 className="text-lg font-semibold mb-4">Moves</h3>
         <MovesList moves={pokemon?.moves} />

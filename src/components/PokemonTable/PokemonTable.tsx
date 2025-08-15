@@ -20,9 +20,22 @@ interface IPokemon {
 export interface IPokemonTableProps {
   data: IPokemon[];
 }
-
+/**
+ * Renders a table of Pokémon with their details such as type, HP, speed, and ability.
+ * Clicking on a row navigates to that Pokémon's detail page.
+ *
+ * @param {IPokemonTableProps} props - The list of Pokémon data to display.
+ * @returns A styled table displaying Pokémon details.
+ */
 const PokemonTable: React.FC<IPokemonTableProps> = ({ data }) => {
   const navigate = useNavigate();
+  /**
+   * Navigates to the detail page of a specific Pokémon.
+   *
+   * @param {number | undefined} id - The ID of the Pokémon.
+   * @param {string | undefined} name - The name of the Pokémon.
+   * @returns {void}
+   */
   const handleNavigation = (id: number | undefined, name: string | undefined) => {
     if (id && name) {
       navigate(`/pokemon/${id}/${name}`);

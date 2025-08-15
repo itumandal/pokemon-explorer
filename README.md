@@ -124,5 +124,36 @@ Behind the scenes you’ll fetch data from [PokeAPI](https://pokeapi.co/) and de
    - installed Jest and React Testing Library for Unit Testing.
    - installed Tailwind Css for styling
    - installed React Router DOM for SPA Routing
+   - installed React Query
 
 ## 📌 Design Decisions Notes
+
+1. Setting up @tanstack/react-query via QueryClientProvider
+   - Reason : This app needs to fetch, cache, and manage Pokémon API data efficiently without manually handling loading, error, or refetch states | React Query for caching
+   - Pros: Automatic caching & background refetching, Simplifies async state management.
+2. Using BrowserRouter from react-router-dom
+   - Reason: Enables client-side routing for navigation between the Pokémon list, details page, etc.
+   - Pros:Declarative route definitions, Seamless navigation without full page reloads.
+3. Importing index.css globally - Provides base Tailwind CSS styles and any global resets, Keeps styling consistent across the app.
+4. App.tsx
+   - The App.tsx file acts as the central routing configuration for the application, defining which component is rendered for each URL path.
+   - Page Separation:
+     - PokemonCollection – Displays the list of Pokémon.
+     - PokemonDetail – Shows detailed Pokémon info.
+     - NotFound – Fallback for unknown routes.
+5. PokemonCollection Component - main dashboard to display a paginated collection of Pokémon
+   - **Pagination** - Controlled with `page` state and derived `offset` to fetch limited Pokémon per request.
+   - **React Query for Data Fetching**
+     - `usePokemonList` hook returns both a paginated Pokémon list and detailed queries for each Pokémon.
+     - This parallel fetching approach reduces the time to render the complete dataset and does caching.
+   - Clear separation of concerns: statistics, table, and pagination controls.
+6. PokemonTable Component -
+   - Renders a table of Pokémon with their details such as type, HP, speed, and ability.
+   - Clicking on a row navigates to that Pokémon's detail page.
+7. PokemonDetail Component - Component that displays detailed information for a single Pokémon.
+   - Fetches Pokémon details from the API.
+   - Displays general information such as types, abilities, height, weight, and base experience.
+   - Shows base stats in a horizontal bar format.
+   - Displays the evolution chain if available.
+   - Lists all moves for the Pokémon - lazy-loading (infinite scroll) functionality
+8. Added Unit Testing for all the components (JEST + RTL)

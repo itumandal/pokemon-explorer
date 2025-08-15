@@ -15,6 +15,20 @@ export interface IPokemonDashboardStatsProps {
   distributionItems?: IDistributionItem[];
 }
 
+/**
+ * PokemonDashboardStats
+ *
+ * A reusable stats card component that can be used to display:
+ * - Simple text/value/text layout (`default`)
+ * - A distribution of stats (`distribution`)
+ *
+ * @param {string} [topText] - Text displayed above the value
+ * @param {string | number} [value] - The main stat value
+ * @param {string} [bottomText] - Text displayed below the value
+ * @param {PokemonLayout} [layout='default'] - The layout type for rendering
+ * @param {IDistributionItem[]} [distributionItems=[]] - Distribution data for 'distribution' layout
+ * @returns {JSX.Element} A styled stats card component
+ */
 const PokemonDashboardStats: React.FC<IPokemonDashboardStatsProps> = ({
   topText,
   value,
