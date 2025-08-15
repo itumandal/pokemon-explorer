@@ -9,12 +9,12 @@ jest.mock('../ErrorMessage', () => () => <div data-testid="error">Error occurred
 
 // Mock getTypeStyle
 jest.mock('../../utils/pokemonColors', () => ({
-  getTypeStyle: (type: string) => ({ icon: '⚡', color: 'yellow' }),
+  getTypeStyle: () => ({ icon: '⚡', color: 'yellow' }),
 }));
 
 // Mock IntersectionObserver
 class MockIntersectionObserver {
-  constructor(private callback: IntersectionObserverCallback) {}
+  constructor() {}
   observe = jest.fn();
   unobserve = jest.fn();
   disconnect = jest.fn();

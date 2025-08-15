@@ -3,9 +3,8 @@ import userEvent from '@testing-library/user-event';
 import PokemonDetail from './PokemonDetail';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { IEvolutionNode, usePokemonDetailQuery } from '../../customHooks/usePokemonQueries';
+import {  usePokemonDetailQuery } from '../../customHooks/usePokemonQueries';
 import { usePokemonStats } from '../../customHooks/usePokemonStats';
-import { IMoveItem } from '../../components/MovesList/MovesList';
 
 // Mock all hooks and functions
 jest.mock('react-router-dom', () => ({
@@ -33,7 +32,7 @@ jest.mock('../../utils/config', () => ({
 }));
 
 jest.mock('../../utils/pokemonColors', () => ({
-  getTypeStyle: jest.fn((type: string) => ({ color: 'red', icon: '⚡' })),
+  getTypeStyle: jest.fn(() => ({ color: 'red', icon: '⚡' })),
 }));
 
 jest.mock('../../components/HorizontalBaseStats/HorizontalBaseStats', () => ({
@@ -47,12 +46,12 @@ jest.mock('../../components/HorizontalBaseStats/HorizontalBaseStats', () => ({
 
 jest.mock('../../components/MovesList/MovesList', () => ({
   __esModule: true,
-  default: ({ moves }: { moves?: IMoveItem[] }) => <div>Moves Component</div>,
+  default: () => <div>Moves Component</div>,
 }));
 
 jest.mock('../../components/EvolutionChain/EvolutionChain', () => ({
   __esModule: true,
-  default: ({ chain }: { chain: IEvolutionNode }) => <div>Evolution Chain Component</div>,
+  default: () => <div>Evolution Chain Component</div>,
 }));
 
 jest.mock('../../customHooks/usePokemonQueries', () => ({

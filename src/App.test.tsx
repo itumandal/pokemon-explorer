@@ -12,6 +12,7 @@ jest.mock('./pages/pokemonDetail/PokemonDetail', () => ({
   __esModule: true,
   default: () => <div data-testid="pokemon-detail">Pokemon Detail Page</div>,
 }));
+
 jest.mock('./pages/NotFound', () => ({
   __esModule: true,
   default: () => <div data-testid="page-not-found">404 - Page Not Found</div>,
@@ -25,19 +26,21 @@ describe('App routing', () => {
       </MemoryRouter>
     );
   };
+
   afterEach(() => cleanup());
-  test('renders Pokemon Collection on default route', () => {
+
+  test('renders Pokemon Collection on default route', async () => {
     setup('/');
-    expect(screen.getByTestId('pokemon-collection')).toBeInTheDocument();
+    expect(await screen.findByTestId('pokemon-collection')).toBeInTheDocument();
   });
 
-  test('renders PokemonDetail on /pokemon/:id/:name route', () => {
+  test('renders PokemonDetail on /pokemon/:id/:name route', async () => {
     setup('/pokemon/1/pikachu');
-    expect(screen.getByTestId('pokemon-detail')).toBeInTheDocument();
+    expect(await screen.findByTestId('pokemon-detail')).toBeInTheDocument();
   });
 
-  test('renders NotFound for an unknown route', () => {
+  test('renders NotFound for an unknown route', async () => {
     setup('/unknown-route');
-    expect(screen.getByTestId('page-not-found')).toBeInTheDocument();
+    expect(await screen.findByTestId('page-not-found')).toBeInTheDocument();
   });
 });

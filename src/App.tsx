@@ -1,7 +1,10 @@
+import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import PokemonCollection from './pages/pokemonCollection/PokemonCollection';
-import PokemonDetail from './pages/pokemonDetail/PokemonDetail';
 import NotFound from './pages/NotFound';
+import Loader from './components/Loader';
+
+const PokemonCollection = lazy(() => import('./pages/pokemonCollection/PokemonCollection'));
+const PokemonDetail = lazy(() => import('./pages/pokemonDetail/PokemonDetail'));
 
 /**
  * App component is the central routing configuration for the application.
@@ -26,11 +29,13 @@ import NotFound from './pages/NotFound';
  */
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<PokemonCollection />} />
-      <Route path="/pokemon/:id/:name" element={<PokemonDetail />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <Suspense fallback={<Loader />}>
+      <Routes>
+        <Route path="/" element={<PokemonCollection />} />
+        <Route path="/pokemon/:id/:name" element={<PokemonDetail />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
 }
 
