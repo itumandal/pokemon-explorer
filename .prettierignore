@@ -1,0 +1,6 @@
+# Ignore artifacts:
+dist
+build
+
+# Ignore a specific file
+src/some-file.ts
