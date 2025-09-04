@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import ErrorMessage from '../../components/ErrorMessage';
 import Loader from '../../components/Loader';
 import PokemonDashboardStats, {
@@ -8,6 +8,7 @@ import PokemonTable from '../../components/PokemonTable/PokemonTable';
 import { usePokemonList } from '../../customHooks/usePokemonQueries';
 import type { IPokemonDetail } from '../../types/pokemon';
 import { getTypeStyle } from '../../utils/pokemonColors';
+import { usePage } from '../../context/PageContext';
 
 /**
  * PokemonCollection Component
@@ -43,7 +44,7 @@ import { getTypeStyle } from '../../utils/pokemonColors';
  */
 
 const PokemonCollection = () => {
-  const [page, setPage] = useState(1);
+  const { page, setPage } = usePage();
   const limit = 5;
   const offset = (page - 1) * limit;
 
@@ -71,7 +72,7 @@ const PokemonCollection = () => {
     }, 0);
 
     return totalHpInCurrentPage / pokemonDetails.length;
-  }, [pokemonDetails]);
+  }, [JSON.stringify(pokemonDetails)]);
 
   /**
    * Finds the Pokémon with the highest total stats in the current page.
@@ -85,7 +86,7 @@ const PokemonCollection = () => {
         return { name: p.name, score: totalStats };
       })
       .sort((a, b) => b.score - a.score)[0];
-  }, [pokemonDetails]);
+  }, [JSON.stringify(pokemonDetails)]);
 
   /**
    * Calculates the percentage distribution of Pokémon types in the current page.
@@ -116,7 +117,7 @@ const PokemonCollection = () => {
       }))
       .sort((a, b) => b.percentage - a.percentage);
     return distributionPokemonType;
-  }, [pokemonDetails]);
+  }, [JSON.stringify(pokemonDetails)]);
 
   /**
    * Prepares dashboard card content.

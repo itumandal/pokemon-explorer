@@ -41,6 +41,7 @@ export const usePokemonList = (limit: number, offset: number, page: number) => {
     queryFn: () => getPokemonList(limit, offset),
     staleTime: 1000 * 60 * 5,
   });
+  //! useQueries : multiple queries at once in parallel.
   const detailQueries = useQueries({
     queries: (pokemonListQuery?.data?.results || []).map((p) => ({
       queryKey: ['pokemonDetail', p.name],
@@ -55,7 +56,7 @@ export const usePokemonList = (limit: number, offset: number, page: number) => {
 /**
  * Fetches additional details for a Pokémon, including species and evolution chain.
  *
- * @param {string | undefined} nameOrId - Pokémon name or ID.
+ * @param {string | undefined} name - Pokémon name.
  * @param {IPokemonDetail | undefined} detailQuery - Pokémon detail data used to extract ID.
  * @returns {{
  *   speciesQuery: UseQueryResult<IPokemonSpecies | null>,
@@ -64,6 +65,47 @@ export const usePokemonList = (limit: number, offset: number, page: number) => {
  *  - `speciesQuery`: Query result for Pokémon species data.
  *  - `evolutionQuery`: Query result for Pokémon evolution chain.
  */
+export const usePokemonDetail = (name: string | undefined) => {
+  const detailQuery = useQuery<IPokemonDetail>({
+    queryKey: ['pokemonDetail', name],
+    enabled: !!name,
+    queryFn: () => getPokemonDetail(name!),
+    staleTime: 1000 * 60 * 5,
+  });
+
+  // species (depends on detail)
+  const speciesQuery = useQuery<IPokemonSpecies | null>({
+    queryKey: ['pokemonSpecies', detailQuery.data?.id],
+    enabled: !!detailQuery.data?.id,
+    queryFn: async () => {
+      const id = detailQuery.data?.id;
+      if (typeof id !== 'number') return null;
+      return getPokemonSpecies(id);
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+  // evolution (depends on species)
+  const evolutionQuery = useQuery<IEvolutionChainResponse | null>({
+    queryKey: ['evolutionChain', speciesQuery.data?.evolution_chain?.url],
+    enabled: !!speciesQuery.data?.evolution_chain?.url,
+    queryFn: async () => {
+      const url = speciesQuery.data?.evolution_chain?.url;
+      if (!url) return null;
+      return getEvolutionChain(url);
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+  return {
+    detailQuery,
+    speciesQuery,
+    evolutionQuery,
+    isLoading: detailQuery.isLoading || speciesQuery.isLoading || evolutionQuery.isLoading,
+    isError: detailQuery.isError || speciesQuery.isError || evolutionQuery.isError,
+  };
+};
+
 export const usePokemonDetailQuery = (
   nameOrId: string | undefined,
   detailQuery: IPokemonDetail | undefined

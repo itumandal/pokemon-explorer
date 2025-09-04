@@ -1,12 +1,10 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { usePokemonDetailQuery } from '../../customHooks/usePokemonQueries';
+import { usePokemonDetail } from '../../customHooks/usePokemonQueries';
 import { usePokemonStats } from '../../customHooks/usePokemonStats';
 import EvolutionChain from '../../components/EvolutionChain/EvolutionChain';
 import HorizontalBaseStats from '../../components/HorizontalBaseStats/HorizontalBaseStats';
 import Loader from '../../components/Loader';
 import MovesList from '../../components/MovesList/MovesList';
-import { getPokemonDetail } from '../../api/pokemonApi';
 import { createStatsMap, getStatValue, STAT_CONFIG } from '../../utils/config';
 import { getTypeStyle } from '../../utils/pokemonColors';
 
@@ -23,19 +21,18 @@ import { getTypeStyle } from '../../utils/pokemonColors';
  * @returns  A detailed Pokémon view with stats, abilities, evolutions, and moves.
  */
 const PokemonDetail = () => {
-  const { id, name } = useParams();
+  const { name } = useParams();
   const navigate = useNavigate();
-  const { data: detailPokemonQuery } = useQuery({
-    queryKey: ['pokemonDetail', name],
-    queryFn: () => getPokemonDetail(name ?? ''),
-    staleTime: 1000 * 60 * 5,
-  });
-  const { speciesQuery, evolutionQuery } = usePokemonDetailQuery(id, detailPokemonQuery);
-  const pokemon = detailPokemonQuery;
+  const {
+    detailQuery: detailPokemonQuery,
+    evolutionQuery,
+    isLoading,
+    isError,
+  } = usePokemonDetail(name);
+
+  const pokemon = detailPokemonQuery.data;
   const statsMap = createStatsMap(pokemon);
-  const isLoading = speciesQuery.isLoading || evolutionQuery.isLoading;
-  const isError = speciesQuery.isError;
-  const { typeList } = usePokemonStats(detailPokemonQuery);
+  const { typeList } = usePokemonStats(detailPokemonQuery.data);
 
   if (isLoading) {
     return (
@@ -54,7 +51,7 @@ const PokemonDetail = () => {
         className="mb-4 flex items-center gap-1 px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg shadow hover:bg-blue-700 hover:shadow-md transition-all duration-200 cursor-pointer"
         onClick={() => navigate('/')}
       >
-        ← Back
+        ← Back to home
       </button>
       {/* Pokémon header with name and image */}
       <div className="bg-gradient-to-r from-red-400 via-purple-500 to-blue-600 rounded-t-lg text-white pl-6 pr-6 h-50 flex justify-between items-center">

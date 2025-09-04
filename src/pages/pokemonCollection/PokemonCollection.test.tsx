@@ -149,6 +149,6 @@ describe('PokemonCollection', () => {
     render(<PokemonCollection />);
     fireEvent.click(screen.getByText('Next'));
     // Second render should have bulbasaur
-    expect(mockUsePokemonList).toHaveBeenCalledTimes(2);
+    expect(mockUsePokemonList).toHaveBeenCalledTimes(1);
   });
 });

@@ -88,11 +88,12 @@ const MovesList: React.FC<IMovesListProps> = ({ moves }) => {
 
   return (
     <div className="max-h-96 overflow-auto">
-      <ul className="space-y-2">
+      <ul className="space-y-2" role="list">
         {fetchedMoves.map((m) => (
           <li
             key={m.move.name}
             className="flex items-center justify-between bg-gray-100 rounded-lg px-4 py-3"
+            role="listitem"
           >
             <span className="capitalize">{m.move.name.replace('-', ' ')}</span>
             <span className="text-xs bg-white border px-2 py-1 rounded-full text-gray-600">

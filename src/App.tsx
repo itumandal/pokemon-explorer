@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import NotFound from './pages/NotFound';
 import Loader from './components/Loader';
+import { PageProvider } from './context/PageContext';
 
 const PokemonCollection = lazy(() => import('./pages/pokemonCollection/PokemonCollection'));
 const PokemonDetail = lazy(() => import('./pages/pokemonDetail/PokemonDetail'));
@@ -29,13 +30,15 @@ const PokemonDetail = lazy(() => import('./pages/pokemonDetail/PokemonDetail'));
  */
 function App() {
   return (
-    <Suspense fallback={<Loader />}>
-      <Routes>
-        <Route path="/" element={<PokemonCollection />} />
-        <Route path="/pokemon/:id/:name" element={<PokemonDetail />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Suspense>
+    <PageProvider>
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<PokemonCollection />} />
+          <Route path="/pokemon/:id/:name" element={<PokemonDetail />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </PageProvider>
   );
 }
 
